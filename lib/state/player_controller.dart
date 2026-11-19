@@ -34,6 +34,17 @@ class _PlayerScopeState extends State<PlayerScope> with TickerProviderStateMixin
   // -------- 收藏 --------
   final Set<int> favorites = {};
 
+  /// 状态版本号：任何状态变化都 +1
+  /// 各页面用 ValueListenableBuilder 监听它来刷新 UI
+  /// （PlayerScope 本身不重建子树，所以需要这个通知机制）
+  final ValueNotifier<int> revision = ValueNotifier<int>(0);
+
+  void _bump() {
+    if (!mounted) return;
+    setState(() {});
+    revision.value++;
+  }
+
   // -------- 播放状态 Widget 用 --------
   int get favoriteCount => favorites.length;
   bool isFavorite(int id) => favorites.contains(id);
@@ -63,6 +74,7 @@ class _PlayerScopeState extends State<PlayerScope> with TickerProviderStateMixin
   void dispose() {
     _tickController.removeListener(_onTick);
     _tickController.dispose();
+    revision.dispose();
     super.dispose();
   }
 
@@ -76,7 +88,7 @@ class _PlayerScopeState extends State<PlayerScope> with TickerProviderStateMixin
       playNext();
       return;  // playNext 内部 setState
     }
-    setState(() {});  // 进度更新 → 重绘
+    _bump();  // 进度更新 → 重绘
     _tickController.forward(from: 0);  // 下一个 16ms
   }
 
@@ -92,43 +104,43 @@ class _PlayerScopeState extends State<PlayerScope> with TickerProviderStateMixin
     if (isPlaying) return;
     isPlaying = true;
     _tickController.forward(from: 0);
-    setState(() {});
+    _bump();
   }
 
   void stopPlayback() {
     isPlaying = false;
     _tickController.stop();
-    setState(() {});
+    _bump();
   }
 
   void seekTo(double seconds) {
     final total = currentSong.duration.inSeconds.toDouble();
     progressSeconds = seconds.clamp(0.0, total);
-    setState(() {});
+    _bump();
   }
 
   void playPrev() {
     currentSongIndex = (currentSongIndex + 7) % songs.length;
     progressSeconds = 0;
-    setState(() {});
+    _bump();
   }
 
   void playNext() {
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     progressSeconds = 0;
-    setState(() {});
+    _bump();
   }
 
   void openSong(int index) {
     currentSongIndex = index;
     progressSeconds = 0;
-    setState(() {});
+    _bump();
   }
 
   void toggleFavorite(int id) {
     if (favorites.contains(id)) favorites.remove(id);
     else favorites.add(id);
-    setState(() {});
+    _bump();
   }
 
   @override

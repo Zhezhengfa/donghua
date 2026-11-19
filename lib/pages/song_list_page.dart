@@ -50,7 +50,10 @@ class _SongListPageState extends State<SongListPage>
   @override
   Widget build(BuildContext context) {
     final state = PlayerScope.of(context);
-    return Scaffold(
+    // 监听状态版本号：播放/收藏变化时刷新列表（当前播放高亮、收藏图标）
+    return ValueListenableBuilder<int>(
+      valueListenable: state.revision,
+      builder: (context, _, __) => Scaffold(
       backgroundColor: const Color(0xFFFEF7FF),
       // ===== AppBar =====
       appBar: AppBar(
@@ -85,6 +88,7 @@ class _SongListPageState extends State<SongListPage>
           NavigationDestination(icon: Icon(Icons.music_note_outlined), selectedIcon: Icon(Icons.music_note), label: '歌单'),
           NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: '我的'),
         ],
+      ),
       ),
     );
   }

@@ -13,7 +13,10 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = PlayerScope.of(context);
-    return Scaffold(
+    // 监听状态版本号：收藏数量变化时刷新
+    return ValueListenableBuilder<int>(
+      valueListenable: state.revision,
+      builder: (context, _, __) => Scaffold(
       backgroundColor: const Color(0xFFFEF7FF),
       appBar: AppBar(
         elevation: 0,
@@ -109,6 +112,7 @@ class ProfilePage extends StatelessWidget {
           NavigationDestination(icon: Icon(Icons.music_note_outlined), selectedIcon: Icon(Icons.music_note), label: '歌单'),
           NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: '我的'),
         ],
+      ),
       ),
     );
   }

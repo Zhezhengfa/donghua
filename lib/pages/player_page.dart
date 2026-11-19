@@ -38,9 +38,12 @@ class _PlayerPageState extends State<PlayerPage> {
   @override
   Widget build(BuildContext context) {
     final state = PlayerScope.of(context);
-    final song = state.currentSong;
-
-    return Scaffold(
+    // 监听状态版本号：播放/进度/收藏变化时刷新整个详情页
+    return ValueListenableBuilder<int>(
+      valueListenable: state.revision,
+      builder: (context, _, __) {
+        final song = state.currentSong;
+        return Scaffold(
       backgroundColor: const Color(0xFFFEF7FF),
       // ===== AppBar：返回按钮 + 歌曲标题 =====
       appBar: AppBar(
@@ -120,6 +123,8 @@ class _PlayerPageState extends State<PlayerPage> {
           const SizedBox(height: 40),
         ],
       ),
+        );
+      },
     );
   }
 
