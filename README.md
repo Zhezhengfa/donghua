@@ -71,3 +71,12 @@ flutter run -d <device-id>
 - 歌曲、歌词、时长均为写死的 mock 数据，封面使用 `LinearGradient` 生成，不含图片资源
 - 视觉参数对齐 Material 3 默认规范（`useMaterial3: true` + `ColorScheme.fromSeed`）
 - 配套的 HTML 高保真原型位于同级目录 `melostructure.html`，用于浏览器内快速预览
+
+## 持续集成
+
+`.github/workflows/flutter.yml` 在每次推送到 `main` 时自动执行 `flutter analyze`，
+并通过后构建 release APK，产物可在 Actions 页面的 Artifacts 中下载。
+
+## 许可
+
+[MIT License](LICENSE)
