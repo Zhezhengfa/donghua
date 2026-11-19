@@ -22,16 +22,14 @@ class SpectrumBars extends StatefulWidget {
 
 class _SpectrumBarsState extends State<SpectrumBars>
     with TickerProviderStateMixin {
-  // 8 条独立 controller（每条 duration 1.3~2.0s 循环，错峰）
+  // 8 条独立 controller（每条 duration 1.3~2.0s 循环，时长不同即形成错峰）
   late final List<AnimationController> _controllers;
-  late final List<double> _durations;  // 每条时长（毫秒）
-  late final List<double> _delays;      // 每条延迟（0~0.49，对应 Interval begin）
+  late final List<double> _durations;  // 每条时长（秒）
 
   @override
   void initState() {
     super.initState();
     _durations = [1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0];  // 错峰时长
-    _delays =    [0.0, 0.07, 0.14, 0.21, 0.28, 0.35, 0.42, 0.49];  // 错峰起点
     _controllers = List.generate(8, (i) => AnimationController(
       vsync: this,
       duration: Duration(milliseconds: (_durations[i] * 1000).toInt()),
